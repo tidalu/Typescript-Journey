@@ -1,0 +1,18 @@
+{
+    "name": "hello-ts",
+    "license": "NOLICENSE",
+    "devDependencies": {
+        "typescript": "^4.9.5"
+    },
+    "scripts": {
+        "dev": "tsc --watch --preserveWatchOutput"
+    },
+    "version": "1.0.0",
+    "main": "index.js",
+    "keywords": [],
+    "author": "",
+    "description": "",
+    "dependencies": {
+        "yarn": "^1.22.19"
+    }
+}
