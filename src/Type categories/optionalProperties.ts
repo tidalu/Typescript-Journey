@@ -59,3 +59,5 @@ printCar5({
 // here for color, it will give us this long lines: Argument of type '{ make: string; model: string; year: number; chargeVoltage: number; color: string; }' is not assignable to parameter of type '{ make: string; model: string; year: number; chargeVoltage?: number | undefined; }'.
   // Object literal may only specify known properties, and 'color' does not exist in type '{ make: string; model: string; year: number; chargeVoltage?: number | undefined; }'.
 })
+
+// ABOVE there when we use print care with object that has extra key which was not declared in print car, if we literally use just object inside of the print car whatever extra added keys will make an error occur. cuz we will not be able access them,  but if we make that abject a variable then if we call print card to that object any extra added keys will not be an error, cuz they are not pointless anymore cuz we are able to access them, 

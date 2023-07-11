@@ -24,11 +24,7 @@ const result1 = add1(3, "4"); // type result : any
 // the names of the properties that are (or maybe) present
 // the types of those properties
 
-var car = {
-  make: "Toyota",
-  model: "Corolla",
-  year: 2002,
-};
+
 // that we could describe the objects structure
 // {
 //     make: string,
