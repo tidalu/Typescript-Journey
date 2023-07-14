@@ -128,3 +128,4 @@ const newYearEve: SpecialDate= {
 newYearEve.getReason
 
 // while there is not true extends keyword that can be used when defining type aliases, this pattern has a very similar effect
+

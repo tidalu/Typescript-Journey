@@ -1,8 +1,8 @@
 // Array types
 // Describing types for arrays is often as easy as adding [] to the end of the array member’s type. For example the type for an array of strings would look like string[]
-const fileExtension = ["js", "ts"];
+var fileExtension = ["js", "ts"];
 // we could use our more complicated car type too, following the type for our 3-property object with [] as shown in the tooltip below:
-const cars = [
+var cars = [
     {
         make: "Toyota",
         model: "Corolla",
@@ -13,8 +13,8 @@ const cars = [
 // sometimes we may want to work with multi element, ordered data structure,w here position of each element has some special meaning or convention. this kind of structure is often called a tuple.
 // let's imagine we define a convention where we can represent the same "2002 Toyota Corolla" as 
 //          [Year,  Make,     Model]
-let myCar = [2002, "Toyota", "Corolla"];
-const [year, make, model] = myCar;
+var myCar = [2002, "Toyota", "Corolla"];
+var year = myCar[0], make = myCar[1], model = myCar[2];
 // const model: string|number
 // in this case inference is not very handy 
 // | means or, we can think if string|number means either a string or a number
@@ -23,7 +23,7 @@ const [year, make, model] = myCar;
 // it doesn’t quite help us with the “finite length” aspect of tuples
 // If TypeScript made a more specific assumption as it inferred the type of myCar, it would get in our way much of the time…
 // There’s no major problem here, but it does mean that we need to explicitly state the type of a tuple whenever we declare one.
-let myCar1 = [
+var myCar1 = [
     2002,
     "Toyota",
     "Corolla",
@@ -36,13 +36,13 @@ let myCar1 = [
 // myCar1 = [2017, "Honda", "Accord", "Sedam"]; ///  I am commenting this cuz it has an error
 // Type '[number, string, string, string]' is not assignable to type '[number, string, string]'.
 //   Source has 4 element(s) but target allows only 3.
-const [year1, make1, model1] = myCar1;
+var year1 = myCar1[0], make1 = myCar1[1], model1 = myCar1[2];
 // here if we look at the inference it is showing correct 
 // Limitations
 // const numPair: [number, number] = [4, 5, 6] // I am commenting this cuz it has an error
 // Type '[number, number, number]' is not assignable to type '[number, number]'.Source has 3 element(s) but target allows only 2. 
 //  but not around push and pop: 
-const numPair1 = [4, 5];
+var numPair1 = [4, 5];
 numPair1.push(6); // [4, 5, 6]
 numPair1.pop(); // [4, 5]
 numPair1.pop(); // [4]
