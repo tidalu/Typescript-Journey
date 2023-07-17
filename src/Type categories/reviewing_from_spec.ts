@@ -84,7 +84,7 @@ greet1("Maddison", new Date())
 // [number] is a different thing, look at Tuples 
 
 // any
-// use the to avoid typeschecking
+// use the to avoid typechecking
 
 let obj: any = { x: 0 };
 // None of the following lines of code will throw compiler errors.
@@ -428,4 +428,101 @@ configure("automatic");
 
 // There’s one more kind of literal type: boolean literals. There are only two boolean literal types, and as you might guess, they are the types true and false. The type boolean itself is actually just an alias for the union true | false.
 
-// till literal interface
+// literal interface 
+
+// when  u initialize a variable with an object, typescript assumes that the properties of that 
+// object might change values later. for example, if you wrote code like this : 
+
+const obj4 = { counter: 0 };
+if( /* someCondition */ 3 >= 3 ) {
+  obj4.counter = 1;
+}
+
+
+// typescript does not assume the assignment of 1 to a field which previously had 0 is an error 
+// another way pf asaying this is that obj4.counter must have the type number, not 0, because types ate used to determine both reading and writing bahavior.
+
+
+
+// the  same applies to string 
+
+declare function handleRequest(url: string, method: "GET" | "POST" ): void;
+
+const req = { url: "https://example.com", method: "GET" };
+handleRequest(req.url, req.method );  //argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'.
+
+// in the above example req.method is inferred to be a string , not "GET". cuz code can be evaluated between the creation of req and the call of handleRequest which could assign a new string like "GUESS" to req.method, Typescripc consider this code to have an error.
+
+// how to fix this 
+
+//1. we can change the interface by adding a type assertion in either location:
+
+//change 1
+const req1 = { url: "https://example.com", method: "GET" as "GET" };
+// change 2
+handleRequest( req.url, req.method as "GET" );
+
+// 2.  we can use as const to convert the entire object to be like type literals:
+
+const req2 = { url: "https://example.com", method: "GET" } as const;
+handleRequest( req2.url, req2.method );
+
+// the as const suffic acts like const but for the type system, ensuring that all peoperties are assigned the literal type insted of a more general version like string, number;
+
+//------------------------------------
+// null and undefined
+//------------------------------------
+
+// javascript has two primitive values used to signal absent or uninitialized value: null and undefined.
+// typescript has two corresponding types by the same names. how these types behave depends on whether you have the strictNullChecks option on;
+
+// when strictNullChecks: off;
+// With strictNullChecks off, values that might be null or undefined can still be accessed normally, and the values null and undefined can be assigned to a property of any type. This is similar to how languages without null checks (e.g. C#, Java) behave. The lack of checking for these values tends to be a major source of bugs; we always recommend people turn strictNullChecks on if it’s practical to do so in their codebase.
+
+// when strictNullChecks: on
+// in this situation , u will need to test for those values before using methods or properties on that value . Just like checking for undefined before using an optional property, we can u se narrowing.
+function doSomethinf(x: string | null ){
+    if( x === null ) {
+        // do nothing
+    }else {
+        console.log("Hello, " + x.toUpperCase())
+    }
+}
+
+// NON-Null assertation operator (postfix !)
+// typescript also has a special syntax for removing null and undefined from type without doing any explicit checking. writing ! after any expression is effectively a type assertion that the value is not a null or undefined
+function liveDangerously( x?: number | null ) {
+    // no error 
+    console.log(x!.toFixed());
+}
+
+// just like lik other type assertions, this does not change the runtime behavious of your code , so it is important to only use ! when you know that value cannot be null or undefined;
+
+//
+
+// Enums
+// Enums are feature added to js by Ts wich allows for describing a value which could be one of a set possible named constants. Unlike most ts features , this isnot a type leve; addition to js but something added to the language and runtime, cuz of this , it is a feature which you should know exists, but maybe hold off on using unless you are sure ,: go there : https://www.typescriptlang.org/docs/handbook/enums.html
+
+//
+
+//less common primitives 
+
+
+//bigint 
+// from ES2020 onwars there is a primitive in js used for every large integers, 
+// bigint
+
+/// create a Bigint using Bigint function
+const onEHundred: bigint = BigInt(100);
+console.log(onEHundred)
+
+
+// symbol 
+// there is a primitive in js used to create a globally unique reference via the function Symbol();
+
+const firstName = Symbol("name")
+const secondName = Symbol("name")
+
+if( firstName === secondName ) {
+    // canot ever happen
+}
