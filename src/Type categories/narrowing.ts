@@ -127,3 +127,165 @@ function multiplyAll(
 }
 
 // till equality narrowing 
+
+// typescript also uses switch statements and equality checks like ===, !==, ==, and != to narrow types. for ex:
+function example(x: string|number, y: string | boolean ) {
+    if( x === y) {
+        // we can call any string method on x or y
+        x.toUpperCase();
+        y.toUpperCase();
+    } else {
+        console.log(x);
+        console.log(y);
+    }
+}
+
+// another example
+
+function printAll3( strs: string | string[] | null ) {
+    if ( strs !== null ) {
+        if ( typeof strs === "object" ) {
+            for( const s of strs ) {
+                console.log(s);
+            }
+        } else if ( typeof strs === "string" ) {
+            console.log(strs)
+        }
+    }
+}
+
+// JavaScript’s looser equality checks with == and != also get narrowed correctly. If you’re unfamiliar, checking whether something == null actually not only checks whether it is specifically the value null - it also checks whether it’s potentially undefined. The same applies to == undefined: it checks whether a value is either null or undefined.
+
+
+interface Container {
+    value: number | null | undefined;
+}
+
+function multiplyValue( container: Container, factor:number ) {
+    // remove both 'null' and 'undefined' from the type 
+    if( container.value != null ) {
+        console.log( container.value ) 
+
+
+        // now we can safely multiply container.value
+        container.value *= factor
+    }
+}
+
+// The in operator narrowing 
+
+// Javascript has an operator for determining if an object or its prototype chain has a property with name: the in operator. Typescropt takes this into account as a way to narrow down potential types.
+
+// for example, with code: "value" in x. where "value" is a string literal and x is an union type. the true branch narrow x's type which have either  an optional or required property  value, missing property value.
+
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+
+function move ( animal: Fish | Bird ) {
+    if( "swim" in animal ) {
+        return animal.swim(;)
+    }
+
+    return animal.fly();
+}
+
+// to reiterate, optional will exist in both sides for narrowing. for example  a human could swim and fly ( wiht the right equipment ) and thus should show up in both sides of the in check:
+
+type Fish1 = { swim: () => void };
+type Bird1 = { fly: () => void };
+type Human = { swim?: () => void; fly?: () => void };
+
+function move( animal: Fish | Bird | Human ) {
+    if( "swim" in animal ) {
+        animal;
+    } else {
+        animal;
+    }
+}
+
+// instanceof narrowing 
+
+// Js  has an operator for checking whether or not value is an "instance" of another value. More specifically, in Js x instanceof Foo checks whether the prototype chain of x contains Foo.prototype. While we wont dive deep here, and you'll see more of this when we get into classes, they can still be useful for most values values that can be constucted with new. As you might have guessed, instanceof is also a type guard, and TS narrows in branches guarded by instanceof s.
+
+
+function logValue( x: Date | string ) {
+    if ( x instanceof Date ) {
+        console.log(x.toUTCString());
+    } else {
+        console.log(x.toUpperCase())
+    }
+}
+
+//  assignments 
+
+
+// when we assign any varible, Ts looks at the right side of the assignment and narrows the left side appropriatly.
+ let x = Math.random() < 0.5 ? 10 : "Hello world!"
+
+ x = 1;
+
+ console.log(x);
+
+x = "Goodbye";
+
+console.log(x);
+
+// / Notice  that each of these assignments is valid. Even though the ovserved type of x changed to Number after our first assignment, we were still able to assign a string to x.
+// This is because  the declared type of x - the type that x started with string | number, and assignability is always checked against declared type.
+
+// if we'd  assigned to boolen to x , we'd have seen an error since that was not part if the declared type. 
+
+let y = Math.random() < 0.5 ? 10 : "hellow world";
+
+y = 1;
+console.log(x);
+
+x = true; // type boolen is not assignable to type string | number;
+
+console.log(x);
+
+//  control flow analysis 
+
+// up until this point, we have gone through some basic examples of how narrows within specific branches, But there's a bit more going on than just walking  up from every variable and looking for gurads in if's , while's condintionals , etc. for example 
+
+function padLeft2( padding: number | string, input: string ) {
+    if ( typeof padding === "number" ) {
+        return " ".repeat(padding) + input;
+    }
+    return padding + input;
+}
+
+// padLeft returns from within its first if block. TypeScript was able to analyze this code and see that the rest of the body (return padding + input;) is unreachable in the case where padding is a number. As a result, it was able to remove number from the type of padding (narrowing from string | number to string) for the rest of the function.
+// this analysis of code based or reachability is called control flow analysis, and typescript uses this flwo analysis to narrow types it encounters type guards and assignments. when a variable can be observed to have a different type at each point.
+
+function example1 () {
+    let x: string | number | boolean;
+
+    x = Math.random() < 0.5;
+    console.log(x)
+
+
+    if( Math.random() < 0.5 ) {
+        x = "hello";
+        console.log(x);
+    } else {
+        x = 100;
+        console.log(x)
+    }
+
+    return x;
+
+
+}
+
+// using type predicates
+
+// we have worked with existing  js constructors to handle narrowing so far, however sometimes you want more direct control over how types changes throughout you code. to define a user-defined type gurad, we simply need a fn whose return type is type predicate;
+
+function isFish ( pet: Fish | Bird ) : pet is Fish {
+    return ( pet as Fish ).swim !== undefined;
+}
+
+// pet is Fish is our type predicate in this example. A predicate takes the form parameterName is Type, where parameterName must  be the name of a parameter from the current function signature.
+
+// Any time isFish is called with some variable, Ts will narrow that variable to that specific type if the original type is compatible.
