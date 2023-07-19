@@ -181,9 +181,9 @@ function multiplyValue( container: Container, factor:number ) {
 type Fish = { swim: () => void };
 type Bird = { fly: () => void };
 
-function move ( animal: Fish | Bird ) {
+function move1 ( animal: Fish | Bird ) {
     if( "swim" in animal ) {
-        return animal.swim(;)
+        return animal.swim()
     }
 
     return animal.fly();
@@ -289,3 +289,167 @@ function isFish ( pet: Fish | Bird ) : pet is Fish {
 // pet is Fish is our type predicate in this example. A predicate takes the form parameterName is Type, where parameterName must  be the name of a parameter from the current function signature.
 
 // Any time isFish is called with some variable, Ts will narrow that variable to that specific type if the original type is compatible.
+
+// both calls to 'swim' and 'fly' are now okay.
+function getSmallPet(): Fish | Bird {
+  // Logic to determine and return a small pet (either a Fish or a Bird)
+  // For the sake of example, let's assume it returns a Fish
+  const smallFish: Fish = {
+    swim: () => {
+      console.log("The fish is swimming.");
+    },
+    name: "Nemo", // Assuming the fish has a name property
+  };
+
+  return smallFish;
+}
+
+
+let pet = getSmallPet();
+
+if(isFish(pet)) {
+    pet.swim();
+} else {
+    pet.fly()
+}
+
+const zoo: (Fish | Bird)[] = [getSmallPet(), getSmallPet(), getSmallPet()];
+const underWater1: Fish[] = zoo.filter(isFish);
+// 0r, equivalently
+const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
+// the predicate may need repeating for more complex examples;
+const underWater3: Fish[] = zoo.filter((pet): pet is Fish => {
+    if(pet.name === "sharkey") return false;
+    return isFish(pet)
+})
+
+
+// Assertion function
+// types can be narrowed using Assertion functions;: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
+
+// dicriminated unions 
+// Most of the examples we’ve looked at so far have focused around narrowing single variables with simple types like string, boolean, and number. While this is common, most of the time in JavaScript we’ll be dealing with slightly more complex structures.
+
+// For some motivation, let’s imagine we’re trying to encode shapes like circles and squares. Circles keep track of their radiuses and squares keep track of their side lengths. We’ll use a field called kind to tell which shape we’re dealing with. Here’s a first attempt at defining Shape.
+
+interface Shape {
+    kind: "circle" | "square";
+    radius?: number;
+    sideLength?: number;
+}
+
+function handleShape(shape: Shape ) {
+    // oops
+    if(shape.kind === "rect")  {  //This comparison appears to be unintentional because the types '"circle" | "square"' and '"rect"' have no overlap.
+
+    }
+}
+
+// we can write a getArea functioni that applies the right logic based on if it is dealing with a circle or square. we will first try dealing with circle;
+
+function getArea2(shape: Shape) {
+    return Math.PI*shape.radius **2; // it is saying radius is possible undefined;
+}
+
+// under the strictNullChecks that gives use an error which is appropriate since radius might not be defined. but what if we perform the appropriate checks on the kind property.
+
+function getArea3(shape: Shape) {
+    if(shape.kind === "circle") {
+        return Math.PI*shape.radius!**2; // radius is possibly undefined;
+    }
+}
+
+// hmm ts still does not know what tot do here , we have hit a point where we know more about our vaoues than the type checker does. we could tryy ro use a not null assertion (!) to say that radius is definitely present.
+
+function getArea5(shape: Shape) { // saying not all code path returns a value , so we wil ifx this in the bottom
+    if(shape.kind === "circle") {
+        return Math.PI*shape.radius!**2;
+    }
+}
+// But this doesn’t feel ideal. We had to shout a bit at the type-checker with those non-null assertions (!) to convince it that shape.radius was defined, but those assertions are error-prone if we start to move code around. Additionally, outside of strictNullChecks we’re able to accidentally access any of those fields anyway (since optional properties are just assumed to always be present when reading them). We can definitely do better
+
+interface Circle {
+    kind: "circle";
+    radius: number;
+}
+
+interface Square {
+    kind: "square";
+    sideLength: number;
+}
+
+type Shape = Circle | Square;
+
+
+// // here we hve prperty separated ShapeFixed out into two types with different value for the kind property, but radius and sideLength are declarred as required in their respective types 
+
+// function getArea8(shape: Shape) {
+//     return Math.PI * shape.radius ** 2; // shape.radius is possibly undedfined;
+// }
+
+// what when we check with the kind property agains it is gonna work
+function getArea(shape: Shape) {
+  if (shape.kind === "circle") {
+    return Math.PI * shape.radius ** 2;
+                      
+  }
+}
+// hat got rid of the error! When every type in a union contains a common property with literal types, TypeScript considers that to be a discriminated union, and can narrow out the members of the union.
+
+// In this case, kind was that common property (which is what’s considered a discriminant property of Shape). Checking whether the kind property was "circle" got rid of every type in Shape that didn’t have a kind property with the type "circle". That narrowed shape down to the type Circle.
+
+// The same checking works with switch statements as well. Now we can try to write our complete getArea without any pesky ! non-null assertions.
+
+function getArea0(shape: Shape) {
+    switch (shape.kind) {
+        case "circle" :
+            return Math.PI * shape.radius ** 2;
+        case "square" : 
+            return shape.sideLength ** 2;
+    }
+}
+
+// the never type 
+// when narrowing we can reduce the options to a point where you have removed all possiblilities and have nothing left. in those cases, ts willl use a never type to present a tate which should not exist.
+
+// exhaustivness checking
+
+// the never is assignable to every type , however no type is assignable  to never (except never itself). this means you can use narrowing and rely on never turing up to do exhaustive checking in a switch statement.
+// for example adding a default to our getArea function which tries to assign the shape to never will not raise an error when possibly case has been handled
+
+type Shape2 = Circle | Square;
+
+function getArea5(shape: Shape2) {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.sideLength ** 2;
+    default:
+      const _exhaustiveCheck: never = shape;
+      return _exhaustiveCheck;
+  }
+}
+
+// adding a  new membet to the Shape union will cause a ts error:
+
+interface Triangle {
+    ikind: "triangle";
+    sideLength: number;
+}
+
+type Shape4 = Circle | Square | Triangle;
+
+function getArea7(shape: Shape4) {
+      switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.sideLength ** 2;
+    default:
+      const _exhaustiveCheck: never = shape;
+// Type 'Triangle' is not assignable to type 'never'.
+      return _exhaustiveCheck;
+  }
+
+}
