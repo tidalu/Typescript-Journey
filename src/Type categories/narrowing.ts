@@ -3,21 +3,21 @@
 
 // imagine we have a function called padLeft.
 
-function padLeft( padding: number | string , input: string): string {
+function padLeft(padding: number | string, input: string): string {
     throw new Error("Not implemented yet ");
 }
 
 // If padding is a number, it will treat that as the number of spaces we want to prepend to input. If padding is a string, it should just prepend padding to input. Let’s try to implement the logic for when padLeft is passed a number for padding.
 
-function padLeft1(padding: number | string , input: string ) {
+function padLeft1(padding: number | string, input: string) {
     return " ".repeat(padding) + input
 } // Argument of type 'string | number' is not assignable to parameter of type 'number'.
 //   Type 'string' is not assignable to type 'number'.
 
 // Uh-oh, we’re getting an error on padding. TypeScript is warning us that we’re passing a value with type number | string to the repeat function, which only accepts a number, and it’s right. In other words, we haven’t explicitly checked if padding is a number first, nor are we handling the case where it’s a string, so let’s do exactly that.
 
-function padLeft3( padding: number | string, input: string ) {
-    if(typeof padding == "number") {
+function padLeft3(padding: number | string, input: string) {
+    if (typeof padding == "number") {
         return " ".repeat(padding) + input;
     }
     return padding + input;
@@ -42,12 +42,12 @@ function padLeft3( padding: number | string, input: string ) {
 
 // In TypeScript, checking against the value returned by typeof is a type guard. Because TypeScript encodes how typeof operates on different values, it knows about some of its quirks in JavaScript. For example, notice that in the list above, typeof doesn’t return the string null. Check out the following example:
 
-function printAll( strs: string | string[] | null ) {
-    if(typeof strs === "object"){
-        for( const s of strs ) { // saying strs is possibly null , cuz typeof null also returns "OBJECT"
-            console.log( s );
+function printAll(strs: string | string[] | null) {
+    if (typeof strs === "object") {
+        for (const s of strs) { // saying strs is possibly null , cuz typeof null also returns "OBJECT"
+            console.log(s);
         }
-    } else if( typeof strs === "string" ) {
+    } else if (typeof strs === "string") {
         console.log(strs);
     } else {
         // do nothing
@@ -63,10 +63,10 @@ function printAll( strs: string | string[] | null ) {
 // truthiness narrowing 
 
 // In JavaScript, we can use any expression in conditionals, &&s, ||s, if statements, Boolean negations (!), and more. As an example, if statements don’t expect their condition to always have the type boolean.
-function getUsersOnlineMessage( numsUsersOnline: number ) {
-    if( numsUsersOnline ) {
+function getUsersOnlineMessage(numsUsersOnline: number) {
+    if (numsUsersOnline) {
         return `There are ${numsUsersOnline} online now!`
-    } 
+    }
     return "Nobody is here. :("
 }
 
@@ -85,12 +85,12 @@ Boolean("Hello"); // true
 // it is fairly popular  to leverage this behavior, espescialyy for guaarding against values like null or undedfined
 // as an example let's try  using it for our printAll function
 
-function printAll1(strs : string | string[] | null ) {
-    if(strs && typeof strs === "object"){ // we are checking the strs is also truthy 
-        for(const s of strs ) {
+function printAll1(strs: string | string[] | null) {
+    if (strs && typeof strs === "object") { // we are checking the strs is also truthy 
+        for (const s of strs) {
             console.log(s)
         }
-    } else if ( typeof  strs  == "string" ) {
+    } else if (typeof strs == "string") {
         console.log(strs);
     }
 } // by this we get rid of error: TypeError: null is not iterable
@@ -98,39 +98,39 @@ function printAll1(strs : string | string[] | null ) {
 // Keep in mind though that truthiness checking on primitives can often be error prone. As an example, consider a different attempt at writing printAll
 
 
-function printAll2( strs : string | string[] | null ) {
+function printAll2(strs: string | string[] | null) {
     // do not do this 
-    if(strs) { // We wrapped the entire body of the function in a truthy check, but this has a subtle downside: we may no longer be handling the empty string case correctly.
-        if(typeof strs === "object") {
-            for(const s of strs ) {
+    if (strs) { // We wrapped the entire body of the function in a truthy check, but this has a subtle downside: we may no longer be handling the empty string case correctly.
+        if (typeof strs === "object") {
+            for (const s of strs) {
                 console.log(s)
             }
-        }else{
-            if( typeof strs == "string"){
+        } else {
+            if (typeof strs == "string") {
                 console.log(strs)
             }
         }
     }
-} 
+}
 
 // one last word on narrowing by truthiness is that Boolean negation with ! filter out from negated branches.
 
 function multiplyAll(
-    values: number[] | undefined , 
-    factor: number 
+    values: number[] | undefined,
+    factor: number
 ): number[] | undefined {
-    if(!values) {
-        return values ;
+    if (!values) {
+        return values;
     } else {
-        return values.map((x) => x * factor )
+        return values.map((x) => x * factor)
     }
 }
 
 // till equality narrowing 
 
 // typescript also uses switch statements and equality checks like ===, !==, ==, and != to narrow types. for ex:
-function example(x: string|number, y: string | boolean ) {
-    if( x === y) {
+function example(x: string | number, y: string | boolean) {
+    if (x === y) {
         // we can call any string method on x or y
         x.toUpperCase();
         y.toUpperCase();
@@ -142,13 +142,13 @@ function example(x: string|number, y: string | boolean ) {
 
 // another example
 
-function printAll3( strs: string | string[] | null ) {
-    if ( strs !== null ) {
-        if ( typeof strs === "object" ) {
-            for( const s of strs ) {
+function printAll3(strs: string | string[] | null) {
+    if (strs !== null) {
+        if (typeof strs === "object") {
+            for (const s of strs) {
                 console.log(s);
             }
-        } else if ( typeof strs === "string" ) {
+        } else if (typeof strs === "string") {
             console.log(strs)
         }
     }
@@ -161,10 +161,10 @@ interface Container {
     value: number | null | undefined;
 }
 
-function multiplyValue( container: Container, factor:number ) {
+function multiplyValue(container: Container, factor: number) {
     // remove both 'null' and 'undefined' from the type 
-    if( container.value != null ) {
-        console.log( container.value ) 
+    if (container.value != null) {
+        console.log(container.value)
 
 
         // now we can safely multiply container.value
@@ -181,8 +181,8 @@ function multiplyValue( container: Container, factor:number ) {
 type Fish = { swim: () => void };
 type Bird = { fly: () => void };
 
-function move1 ( animal: Fish | Bird ) {
-    if( "swim" in animal ) {
+function move1(animal: Fish | Bird) {
+    if ("swim" in animal) {
         return animal.swim()
     }
 
@@ -195,8 +195,8 @@ type Fish1 = { swim: () => void };
 type Bird1 = { fly: () => void };
 type Human = { swim?: () => void; fly?: () => void };
 
-function move( animal: Fish | Bird | Human ) {
-    if( "swim" in animal ) {
+function move(animal: Fish | Bird | Human) {
+    if ("swim" in animal) {
         animal;
     } else {
         animal;
@@ -208,8 +208,8 @@ function move( animal: Fish | Bird | Human ) {
 // Js  has an operator for checking whether or not value is an "instance" of another value. More specifically, in Js x instanceof Foo checks whether the prototype chain of x contains Foo.prototype. While we wont dive deep here, and you'll see more of this when we get into classes, they can still be useful for most values values that can be constucted with new. As you might have guessed, instanceof is also a type guard, and TS narrows in branches guarded by instanceof s.
 
 
-function logValue( x: Date | string ) {
-    if ( x instanceof Date ) {
+function logValue(x: Date | string) {
+    if (x instanceof Date) {
         console.log(x.toUTCString());
     } else {
         console.log(x.toUpperCase())
@@ -220,11 +220,11 @@ function logValue( x: Date | string ) {
 
 
 // when we assign any varible, Ts looks at the right side of the assignment and narrows the left side appropriatly.
- let x = Math.random() < 0.5 ? 10 : "Hello world!"
+let x = Math.random() < 0.5 ? 10 : "Hello world!"
 
- x = 1;
+x = 1;
 
- console.log(x);
+console.log(x);
 
 x = "Goodbye";
 
@@ -248,8 +248,8 @@ console.log(x);
 
 // up until this point, we have gone through some basic examples of how narrows within specific branches, But there's a bit more going on than just walking  up from every variable and looking for gurads in if's , while's condintionals , etc. for example 
 
-function padLeft2( padding: number | string, input: string ) {
-    if ( typeof padding === "number" ) {
+function padLeft2(padding: number | string, input: string) {
+    if (typeof padding === "number") {
         return " ".repeat(padding) + input;
     }
     return padding + input;
@@ -258,14 +258,14 @@ function padLeft2( padding: number | string, input: string ) {
 // padLeft returns from within its first if block. TypeScript was able to analyze this code and see that the rest of the body (return padding + input;) is unreachable in the case where padding is a number. As a result, it was able to remove number from the type of padding (narrowing from string | number to string) for the rest of the function.
 // this analysis of code based or reachability is called control flow analysis, and typescript uses this flwo analysis to narrow types it encounters type guards and assignments. when a variable can be observed to have a different type at each point.
 
-function example1 () {
+function example1() {
     let x: string | number | boolean;
 
     x = Math.random() < 0.5;
     console.log(x)
 
 
-    if( Math.random() < 0.5 ) {
+    if (Math.random() < 0.5) {
         x = "hello";
         console.log(x);
     } else {
@@ -282,8 +282,8 @@ function example1 () {
 
 // we have worked with existing  js constructors to handle narrowing so far, however sometimes you want more direct control over how types changes throughout you code. to define a user-defined type gurad, we simply need a fn whose return type is type predicate;
 
-function isFish ( pet: Fish | Bird ) : pet is Fish {
-    return ( pet as Fish ).swim !== undefined;
+function isFish(pet: Fish | Bird): pet is Fish {
+    return (pet as Fish).swim !== undefined;
 }
 
 // pet is Fish is our type predicate in this example. A predicate takes the form parameterName is Type, where parameterName must  be the name of a parameter from the current function signature.
@@ -292,22 +292,22 @@ function isFish ( pet: Fish | Bird ) : pet is Fish {
 
 // both calls to 'swim' and 'fly' are now okay.
 function getSmallPet(): Fish | Bird {
-  // Logic to determine and return a small pet (either a Fish or a Bird)
-  // For the sake of example, let's assume it returns a Fish
-  const smallFish: Fish = {
-    swim: () => {
-      console.log("The fish is swimming.");
-    },
-    name: "Nemo", // Assuming the fish has a name property
-  };
+    // Logic to determine and return a small pet (either a Fish or a Bird)
+    // For the sake of example, let's assume it returns a Fish
+    const smallFish: Fish = {
+        swim: () => {
+            console.log("The fish is swimming.");
+        },
+        name: "Nemo", // Assuming the fish has a name property
+    };
 
-  return smallFish;
+    return smallFish;
 }
 
 
 let pet = getSmallPet();
 
-if(isFish(pet)) {
+if (isFish(pet)) {
     pet.swim();
 } else {
     pet.fly()
@@ -319,7 +319,7 @@ const underWater1: Fish[] = zoo.filter(isFish);
 const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
 // the predicate may need repeating for more complex examples;
 const underWater3: Fish[] = zoo.filter((pet): pet is Fish => {
-    if(pet.name === "sharkey") return false;
+    if (pet.name === "sharkey") return false;
     return isFish(pet)
 })
 
@@ -338,9 +338,9 @@ interface Shape {
     sideLength?: number;
 }
 
-function handleShape(shape: Shape ) {
+function handleShape(shape: Shape) {
     // oops
-    if(shape.kind === "rect")  {  //This comparison appears to be unintentional because the types '"circle" | "square"' and '"rect"' have no overlap.
+    if (shape.kind === "rect") {  //This comparison appears to be unintentional because the types '"circle" | "square"' and '"rect"' have no overlap.
 
     }
 }
@@ -348,22 +348,22 @@ function handleShape(shape: Shape ) {
 // we can write a getArea functioni that applies the right logic based on if it is dealing with a circle or square. we will first try dealing with circle;
 
 function getArea2(shape: Shape) {
-    return Math.PI*shape.radius **2; // it is saying radius is possible undefined;
+    return Math.PI * shape.radius ** 2; // it is saying radius is possible undefined;
 }
 
 // under the strictNullChecks that gives use an error which is appropriate since radius might not be defined. but what if we perform the appropriate checks on the kind property.
 
 function getArea3(shape: Shape) {
-    if(shape.kind === "circle") {
-        return Math.PI*shape.radius!**2; // radius is possibly undefined;
+    if (shape.kind === "circle") {
+        return Math.PI * shape.radius! ** 2; // radius is possibly undefined;
     }
 }
 
 // hmm ts still does not know what tot do here , we have hit a point where we know more about our vaoues than the type checker does. we could tryy ro use a not null assertion (!) to say that radius is definitely present.
 
 function getArea5(shape: Shape) { // saying not all code path returns a value , so we wil ifx this in the bottom
-    if(shape.kind === "circle") {
-        return Math.PI*shape.radius!**2;
+    if (shape.kind === "circle") {
+        return Math.PI * shape.radius! ** 2;
     }
 }
 // But this doesn’t feel ideal. We had to shout a bit at the type-checker with those non-null assertions (!) to convince it that shape.radius was defined, but those assertions are error-prone if we start to move code around. Additionally, outside of strictNullChecks we’re able to accidentally access any of those fields anyway (since optional properties are just assumed to always be present when reading them). We can definitely do better
@@ -389,10 +389,10 @@ type Shape = Circle | Square;
 
 // what when we check with the kind property agains it is gonna work
 function getArea(shape: Shape) {
-  if (shape.kind === "circle") {
-    return Math.PI * shape.radius ** 2;
-                      
-  }
+    if (shape.kind === "circle") {
+        return Math.PI * shape.radius ** 2;
+
+    }
 }
 // hat got rid of the error! When every type in a union contains a common property with literal types, TypeScript considers that to be a discriminated union, and can narrow out the members of the union.
 
@@ -402,9 +402,9 @@ function getArea(shape: Shape) {
 
 function getArea0(shape: Shape) {
     switch (shape.kind) {
-        case "circle" :
+        case "circle":
             return Math.PI * shape.radius ** 2;
-        case "square" : 
+        case "square":
             return shape.sideLength ** 2;
     }
 }
@@ -420,15 +420,15 @@ function getArea0(shape: Shape) {
 type Shape2 = Circle | Square;
 
 function getArea5(shape: Shape2) {
-  switch (shape.kind) {
-    case "circle":
-      return Math.PI * shape.radius ** 2;
-    case "square":
-      return shape.sideLength ** 2;
-    default:
-      const _exhaustiveCheck: never = shape;
-      return _exhaustiveCheck;
-  }
+    switch (shape.kind) {
+        case "circle":
+            return Math.PI * shape.radius ** 2;
+        case "square":
+            return shape.sideLength ** 2;
+        default:
+            const _exhaustiveCheck: never = shape;
+            return _exhaustiveCheck;
+    }
 }
 
 // adding a  new membet to the Shape union will cause a ts error:
@@ -441,15 +441,15 @@ interface Triangle {
 type Shape4 = Circle | Square | Triangle;
 
 function getArea7(shape: Shape4) {
-      switch (shape.kind) {
-    case "circle":
-      return Math.PI * shape.radius ** 2;
-    case "square":
-      return shape.sideLength ** 2;
-    default:
-      const _exhaustiveCheck: never = shape;
-// Type 'Triangle' is not assignable to type 'never'.
-      return _exhaustiveCheck;
-  }
+    switch (shape.kind) {
+        case "circle":
+            return Math.PI * shape.radius ** 2;
+        case "square":
+            return shape.sideLength ** 2;
+        default:
+            const _exhaustiveCheck: never = shape;
+            // Type 'Triangle' is not assignable to type 'never'.
+            return _exhaustiveCheck;
+    }
 
 }
