@@ -368,7 +368,7 @@ function len1(x: any[] | string) {
 
 // Always prefer parameters with union types instead of overloads when possible
 
-// declaring this in a function
+declaring this in a function
 // typescript will infer what the this should be in a fucntion via code flow analysis, for example in the following:
 const user = {
     id: 123, 
@@ -535,3 +535,67 @@ const angle1 = Math.atan2(...args1);
 
 
 // paramenter deconstructing; -->>>>>>>>>>>>>>>>>>>>>>->>>>>>>>>>
+
+// you can use paramenter too cconvenient unpack objects provided as an agrument into one or more local variables in the functions body. In js, it looks like this:
+
+function sum({ a, b, c }) {
+  console.log(a + b + c);
+}
+sum({ a: 10, b: 3, c: 9 });
+
+// the type annotation for the objects goes after the destucting syntax: 
+function sum1({a, b, c}: {a: number; b: number; c: number}): number {
+  return (a+b+c)
+}
+
+// this can look a bit verbose , but you can a named type here as well:
+
+// same as prior example
+type ABC = {a: number; b: number; c: number};
+function sum3({a, b, c}: ABC) {
+  console.log(a+b+c);
+}
+
+// Assignability of Functions
+
+// return type void
+
+// the void return type for functions can produce some unusual, but expected behavior. Contextual typing with a return type of void does not force functions to not return something. Another way to say this a contextual functon type with void return type (type voidFunc = () => void ), when implemented, can return any other value, but it will be ignored.
+
+// this implementation of the type () => void is valid: 
+
+type voidFunc = () => void;
+
+const f1: voidFunc = () => {
+  return true;
+}
+
+const f2: voidFunc = () => true;
+const f3: voidFunc = function () {
+  return true;
+};
+
+// and when the return value of one of these functions is assigned to another variable, it will retain the type of void: 
+
+const v1 = f1()
+const v2 = f2()
+const v3 = f3()
+
+// this behavior exists so that the follwing code is valid even though Arra.prototype.push returns a number and the Array.prototype.forEach method expects a fucntions with a return type of void.
+
+const src = [1,2,3];
+const dst = [0];
+
+src.forEach((el) => dst.push(el)); 
+
+// this is one special case to be avare of, when a literal functions definition has a void return type, that fucntion must not return anything.
+
+function f4(): void {
+  // @ts-expect-error
+  return true;
+}
+
+const f5 = function (): void {
+  // @ts-expect-error
+  return true;
+}
