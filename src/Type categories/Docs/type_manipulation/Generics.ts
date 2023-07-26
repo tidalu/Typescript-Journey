@@ -146,3 +146,101 @@ console.log(stringNumeric.add(stringNumeric.zeroValue, "Test"));
 
 
 // generic constraints
+
+// If you remember from an earlier example , you may sometimes want to write a generic function that on a set of types where you have some knowledge about what capabilities that set of types will have. In our loggingIdentity example, we wanted to be able to access the .length property of arg, but the compiler could not prove that every type had a .length property, so it warns us that we can’t make this assumption.
+
+function loggingIdentity3<Type>(arg: Type): Type {
+    console.log(arg.length); // length property does not exist on type Type
+    return arg;
+}
+
+// instead of working with any and all types, wed like to constrain this function to work with any and all types that also have the .length property. As long as the type has this member, we will allow it, but it's required to have at least this member. To do so, we must list our requirements as a constraint on what Type can be.
+
+// to do so we will create an interface that describes our constraint. here we will create an interface that has a single .length property and then we will use this interface and the extends keyword to denote our constraint: 
+
+interface Lengthwise {
+    length: number;
+}
+
+
+function loggingIdentity4<Type extends Lengthwise>(arg: Type): Type {
+    console.log(arg.length); // we know it has  length property so no more errors 
+    return arg;
+}
+
+// Because the generic function is now constrained, it will no longer work over any and all types:
+loggingIdentity4(3);
+
+
+/// instead , we need to pass values whose type has all the required properties:
+loggingIdentity({ length: 10, value: 3 });
+
+
+// Using parameters in Generic Constraints
+// you can declare a type parameter that is constrained by another type parameter. For example . here we'd like to get a property from an object given its name. We'd like to ensure that we are not accidentally grabbing a property that does not exist on the obj, so we will place a constraint between the two types: 
+
+function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key) {
+    return obj[key];
+}
+
+let o = { a: 1, b: 2, c: 3, d: 4 };
+console.log(getProperty(o, "a"));
+getProperty(o, "m");
+
+// using CLASS types in Generics
+
+// when creating factories in Ts using generics, it is necessary to refer to class types by their constructor functions, for ex: 
+function create<Type>(c: { new(): Type }): Type {
+    return new c();
+}
+
+// more advanced example uses the prototype prperty to infer and constrain relationships between the constructor function and the instance side of class types.
+
+class BeeKeeper {
+    hasMask: boolean = true;
+}
+
+class ZooKeeper {
+    nameTag: string = "Mikle";
+}
+
+class AnimalAb {
+    numlegs: number = 4;
+}
+
+class Bee extends AnimalAb {
+    numlegs: 6;
+    keeper: BeeKeeper = new BeeKeeper;
+}
+
+class Lion extends AnimalAb {
+    keeper: ZooKeeper = new ZooKeeper();
+}
+
+function createInstance<A extends AnimalAb>(c: new () => A): A {
+    return new c();
+}
+
+createInstance(Lion).keeper.nameTag;
+createInstance(Bee).keeper.hasMask;
+
+
+// generic Parameter defaults 
+
+//  Consider a function that creates a new HTMLElement. Calling the function with no arguments generates a Div; calling it with an element as the first argument generates an element of the argument’s type. You can optionally pass a list of children as well. Previously you would have to define it as:
+
+declare function create1(): Container<HTMLDivElement, HTMLDivElement[]>;
+declare function create<T extends HTMLElement>(element: T): Container<T, T[]>;
+declare function create<T extends HTMLElement, U extends HTMLElement>(
+    element: T,
+    children: U[]
+): Container<T, U[]>;
+
+// A generic parameter default follows the following rules:
+// A type parameter is deemed optional if it has a default.
+// Required type parameters must not follow optional type parameters.
+// Default types for a type parameter must satisfy the constraint for the type parameter, if it exists.
+// When specifying type arguments, you are only required to specify type arguments for the required type parameters. Unspecified type parameters will resolve to their default types.
+// If a default type is specified and inference cannot choose a candidate, the default type is inferred.
+// A class or interface declaration that merges with an existing class or interface declaration may introduce a default for an existing type parameter.
+// A class or interface declaration that merges with an existing class or interface declaration may introduce a new type parameter as long as it specifies a default.
