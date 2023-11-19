@@ -102,3 +102,67 @@ function takeAndCheck(obj: FullObj): string[] | {name: string; age: number }[] |
 }
 
 console.log(takeAndCheck(elif)) 
+
+const cars  : {
+    make : string;
+    model: string;
+    year: number;
+}[]
+    = [
+        {
+            make: "toyota", 
+            model: "corolla", 
+            year: 2002, 
+        }
+    ]
+
+console.log(cars)
+
+// tuples
+
+
+let myCar = [ 2002, "Toyota", "corolla"]
+
+var tuple : [number, number, string] = [
+  2002, 
+  2003, 
+  "stop here", 
+]
+
+
+tuple = [2003, 2003, "sting"]
+
+tuple.push("hello");
+
+console.log(tuple.length);
+
+function foo(x) {
+    // 
+}
+
+
+
+function flipCoin(): "heads" | "tails" {
+  return Math.random() > 0.5 ? "heads" : "tails";
+}
+
+const coinOutcome = flipCoin();
+console.log(coinOutcome)
+
+function maybeGetUserInfo():
+  ["error", Error] | ["success", { name: string; email: string }] {
+  if (coinOutcome === "heads") {
+    return [
+      "success",
+      { name: "Mike North", email: "mike@example.com" },
+    ]
+  } else {
+    return [
+      "error",
+      new Error("The coin landed on TAILS :("),
+    ]
+  }
+}
+
+const outcome = maybeGetUserInfo();
+console.log(outcome);
