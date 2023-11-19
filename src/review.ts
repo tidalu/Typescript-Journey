@@ -103,7 +103,7 @@ function takeAndCheck(obj: FullObj): string[] | {name: string; age: number }[] |
 
 console.log(takeAndCheck(elif)) 
 
-const cars  : {
+const cars1  : {
     make : string;
     model: string;
     year: number;
@@ -116,12 +116,12 @@ const cars  : {
         }
     ]
 
-console.log(cars)
+console.log(cars1)
 
 // tuples
 
 
-let myCar = [ 2002, "Toyota", "corolla"]
+let myCar11 = [ 2002, "Toyota", "corolla"]
 
 var tuple : [number, number, string] = [
   2002, 
@@ -142,14 +142,14 @@ function foo(x) {
 
 
 
-function flipCoin(): "heads" | "tails" {
+function flipCoin1(): "heads" | "tails" {
   return Math.random() > 0.5 ? "heads" : "tails";
 }
 
-const coinOutcome = flipCoin();
+const coinOutcome = flipCoin1();
 console.log(coinOutcome)
 
-function maybeGetUserInfo():
+function maybeGetUserInfo1():
   ["error", Error] | ["success", { name: string; email: string }] {
   if (coinOutcome === "heads") {
     return [
@@ -164,5 +164,5 @@ function maybeGetUserInfo():
   }
 }
 
-const outcome = maybeGetUserInfo();
-console.log(outcome);
+const outcome11 = maybeGetUserInfo1();
+console.log(outcome11)
