@@ -3,11 +3,12 @@
       "outDir": "dist", // where to put the TS files
       "target": "ES6", // which level of JS support to target
       "lib": ["ES2017", "dom"], // add es2017 to the lib array
-      // other compiler options...
+      "declaration" : true, 
+      "module": "CommonJS"
     },
     "include": [
       "src"
     ],  // which files to compile
-      "declaration" : true
+      
   }
   
