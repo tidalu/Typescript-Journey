@@ -7,6 +7,7 @@
     },
     "include": [
       "src"
-    ] // which files to compile
+    ],  // which files to compile
+      "declaration" : true
   }
   
