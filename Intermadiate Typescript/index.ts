@@ -198,4 +198,24 @@ const thing = Thing
 const another = thing.createThing("banna", 123, "red")
 
 // deff of the static : you can use the static keyword to define static class members, including properties. A static property is a property that is shared across all instances of a class, and can be accessed without creating an instance of the class.
-// let me explain the static , it is a property thihc can be accessed without creating the instance of the class, class itself has an access too
+// let me explain the static , it is a property thihc can be accessed without creating the instance of the class, class itself has an access
+
+
+
+// conditional types
+// ternary operators with values
+    
+class Grill {
+    startGas() { }
+    stopGas() { }
+}
+
+class Oven {
+    setTemperature( degrees: number) {}
+}
+
+type Cooking<T> = T extends "grill" ? Grill : Oven
+
+let device1: Cooking<"grill"> = new Grill()
+device1.startGas()
+let device2: Cooking<"oven">
