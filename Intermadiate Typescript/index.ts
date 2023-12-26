@@ -214,8 +214,44 @@ class Oven {
     setTemperature( degrees: number) {}
 }
 
-type Cooking<T> = T extends "grill" ? Grill : Oven
+type Cooking<T> = T extends "grill" ? Grill : Oven;
 
-let device1: Cooking<"grill"> = new Grill()
-device1.startGas()
-let device2: Cooking<"oven">
+let device1: Cooking<"grill"> = new Grill();
+device1.startGas();
+let device2: Cooking<"oven"> = new Oven();
+
+// conditional types practise :
+
+// condition
+// 1	64 extends number; // true
+// 2	number extends 64 // false
+// 3	string[] extends any // true
+// 4	string[] extends any[] // true
+// 5	never extends any // true
+// 6	any extends any // true
+// 7	Date extends {new (...args: any[]): any } // false
+// 8	(typeof Date) extends {new (...args: any[]): any } // true
+
+
+type answer_1 = 64 extends number ? true : false
+//     ^?
+type answer_2 = number extends 64 ? true : false
+//     ^?
+type answer_3 = string[] extends any ? true : false
+//     ^?
+type answer_4 = string[] extends any[] ? true : false
+//     ^?
+type answer_5 = never extends any ? true : false
+//     ^?
+type answer_6 = any extends any ? true : false
+//     ^?
+// prettier-ignore
+type answer_7 = Date extends { new (...args: any[]): any }
+//     ^?
+  ?  true
+  : false
+// prettier-ignore
+type answer_8 = typeof Date extends { new (...args: any[]): any }
+//     ^?
+  ?  true
+  : false
