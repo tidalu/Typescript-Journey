@@ -54,4 +54,96 @@ export { Anime }
 // in the thing above , we have one identifier that is three thing in one,
 // a value (class)
 // a type
-// a namespace 
+// a namespace
+
+
+/// read about namespaces
+//
+//
+//
+
+// class
+
+class FFF {
+    name?: string 
+    mass?: number 
+    color?: string
+    static createSmth(): FFF { // here we are creating FFF interface along with class
+        return { name: "bbb", color: "FFF", mass: 34}
+    }
+}
+
+const valuetest = FFF
+valuetest.createSmth // so here were suing the class itself not the instance that is why we are able to use call apply bind 
+
+// how to test for a type 
+let typeTest: FFF = {}
+// there are using it as interface it is possible with declaration merging
+
+
+
+// modules %%%%% CJS( common js)
+
+// impoort and export modules
+
+// named imports 
+import { strawberry, raspberry } from "./berries"
+import kiwi from "./kiwi"  // defaul inport 
+export function makeFruitSalad() { } // named export 
+export default class FruitBasket { } // default export 
+export { lemon, lime } from "./citrus"
+
+// although it is not very common in js world, it is possible to
+//import an entire module as a namespace.Typescript Supports that as well
+
+import * as allBerries from "./berries" // namespace import 
+allBerries.strawberry // using the namespace
+allBerries.blueBerry
+allBerries.raspberry
+export * from "./berries" // namespace re-export
+
+
+// Common Js interop
+
+// most of the tome, you can just convert somthing like 
+const fs = require("fs")
+
+// we can do that just like this
+
+import * as fs1 from "fs"  // namespace import
+
+
+
+// 
+  ////////////////////////////////////////////////////////
+// @filename: fruits.ts
+function createBanana1() {
+  return { name: "banana", color: "yellow", mass: 183 }
+}
+ 
+// equivalent to CJS `module.exports = createBanana`
+// export = createBanana1
+
+////////////////////////////////////////////////////////
+
+// @filename: smoothie.ts
+ 
+// import createBanana = require("./index")
+const banana = createBanana1()
+
+
+// importing non-TS things
+
+// particulary if we use a bundler like webpack , parcel or snowpack, you may end up importing things are not .js or .ts files
+
+import img from './img.jpeg' // Cannot find module './img.jpeg' or its corresponding type declarations
+
+// img.jpeg  is obviously not a ts file, we just need to tell tss that whenever we
+//import a.jpeg file, it should be treated as if it is a js moduel with a string valus
+// its default export
+
+// see global.d.ts for export
+
+// import
+
+import img1 from './img.jpeg'
