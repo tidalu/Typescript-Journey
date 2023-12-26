@@ -404,3 +404,25 @@ let fruits: ConstructorArg<typeof FruitStand>
 // our more realistic example
 let compilerOptions: ConstructorArg<typeof WebpackCompiler>
 //     ^?
+
+
+
+
+// Indexed access type
+// these kinds of types are all abbout accessing some part of another type via an index
+
+
+interface Car {
+  make: string
+  model: string
+  year: number
+  color: {
+    red: string
+    green: string
+    blue: string
+  }
+}
+ 
+let carColor: Car["color"]
+let redColor: Car['color']['red']
+let carProp: Car['color' | "year"]
