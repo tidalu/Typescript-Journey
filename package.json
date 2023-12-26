@@ -2,6 +2,7 @@
     "name": "hello-ts",
     "license": "NOLICENSE",
     "devDependencies": {
+        "@types/node": "^20.10.5",
         "typescript": "^4.9.5"
     },
     "scripts": {
