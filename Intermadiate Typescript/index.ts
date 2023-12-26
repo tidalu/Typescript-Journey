@@ -254,4 +254,45 @@ type answer_7 = Date extends { new (...args: any[]): any }
 type answer_8 = typeof Date extends { new (...args: any[]): any }
 //     ^?
   ?  true
-  : false
+    : false
+  
+
+// extract and exclude
+    
+// extract
+// it is useful for obtaining some sub-part of a type that is assignable to some other type
+
+
+type FavoriteColors =
+  | "dark sienna"
+  | "van dyke brown"
+  | "yellow ochre"
+  | "sap green"
+  | "titanium white"
+  | "phthalo green"
+  | "prussian blue"
+  | "cadium yellow"
+  | [number, number, number]
+    | { red: number; green: number; blue: number }
+  
+type stringColors = Extract<FavoriteColors, string>
+type numberArrays = Extract<FavoriteColors, number[]>
+type objectTypes = Extract<FavoriteColors, { [key: string]: number }> // another way --> 
+type ObjectColors = Extract<FavoriteColors, { red: number }>
+type tupleColors = Extract<FavoriteColors, [number, number, number]>
+
+// we are extracting in the buset of a type that is assignable to antoher specified type
+
+
+// exclude
+// it is just opposite of extract 
+
+type NonStringColors = Exclude<FavoriteColors, string>
+
+// how doe these work ,
+
+// exclude in the bg
+type Exclude<T, U> = T extends U ? never : T
+
+// extract in the bg
+type Extract<T, U> = T extends U ? T : never
