@@ -426,3 +426,32 @@ interface Car {
 let carColor: Car["color"]
 let redColor: Car['color']['red']
 let carProp: Car['color' | "year"]
+
+
+// Mapped types
+// powerful tool for transforming types
+
+
+type Fruitr = {
+  name: string
+  color: string
+  mass: number
+}
+ 
+type Dict<T> = { [k: string]: T } // <- index signature
+ 
+const fruitCatalog: Dict<Fruitr> = {}
+fruitCatalog.apple
+
+
+// mapped type
+
+type MyRecord = { [FruitKey in "apple" | "cherry"]: Fruitr }
+
+function printFruit(fruit: MyRecord) {
+    fruit.apple
+    fruit.cherry
+    // fruit.lemon  // Property 'lemon' does not exist on type 'MyRecord'
+}
+
+// mapped types 9:00
