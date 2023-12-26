@@ -147,3 +147,55 @@ import img from './img.jpeg' // Cannot find module './img.jpeg' or its correspon
 // import
 
 import img1 from './img.jpeg'
+
+
+
+
+// type queries
+
+// keyof
+// keyof type query allows us to obtain type representing all property keys on a given interface
+
+type DatePropertyNames = keyof Date
+
+// not all the keys are strings , so we can separete out those keys that are symbbol and those that are strings using the intersection operator &
+// lets get sub partt of those 
+type DatePropertyNamesString = DatePropertyNames & string 
+type DatePropertyNamesSymbol = DatePropertyNames & symbol 
+
+
+
+
+// typeof
+
+// the typeif type query allows you to extract a tyoe from a value . An example is shown below
+
+async function main() {
+    const apiResponse = await Promise.all([
+        fetch('https://example.com'), 
+        Promise.resolve("Titanium White")
+    ])
+
+    type ApiResponseType = typeof apiResponse
+}
+
+
+
+// a common use of typeof is to obtain a type representing the "static site " of a class (meanign :
+// constructor , static, properties, and other things not present on an instance of the class )
+
+class Thing {
+    constructor(
+        public readonly name: string, 
+        public readonly mass: number, 
+        public readonly color: string 
+    ) { }
+    
+    static createThing(name: string, mass: number, color: string ) { return new Thing(name, mass, color)}
+}
+
+const thing = Thing
+const another = thing.createThing("banna", 123, "red")
+
+// deff of the static : you can use the static keyword to define static class members, including properties. A static property is a property that is shared across all instances of a class, and can be accessed without creating an instance of the class.
+// let me explain the static , it is a property thihc can be accessed without creating the instance of the class, class itself has an access too
