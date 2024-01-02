@@ -454,4 +454,166 @@ function printFruit(fruit: MyRecord) {
     // fruit.lemon  // Property 'lemon' does not exist on type 'MyRecord'
 }
 
-// mapped types 9:00
+
+
+
+type alse = {
+  name: string
+  color: string
+  mass: number
+}
+type DDD<T> = { [k: string] : T}  // <<- index signature
+
+
+const smthing: DDD<alse> = {}
+smthing.apple 
+
+
+// with mapped types
+
+type DDDchanged = { [Fruitkey in "apple" | "cherry"]: alse }
+
+//notice
+// in keyword in the mapped types 
+function printit(obj: DDDchanged) {
+  obj.cherry
+  obj.pii // there it does not accept rather than apple and cherry
+}
+
+
+// index signstures can be on all string s or all number s , but not some subset of strings or numbers:
+
+type cantbe = { [key: "apple" | "olme"]: Fruit }
+
+
+
+//Record
+// if we make our type a bit more generalized with some type params instead of hardcoding fruit an aplle cherry as  shown below, we will arrive at a built-in type that comes with typescript
+
+type Generalized<KeyType extends number, ValueType> = { [Key in KeyType]: ValueType }
+
+// lets see
+
+type MyRecords<KeyType extends string, ValueType> = {
+  [Key in KeyType]: ValueType
+}
+
+//here is the built in ts type , whivh matches this pretty much exactly
+
+/**
+ * Construct a type with a set of properties K of the T
+ */
+
+type Record<K extends keyof any, T> = {
+  [p in K]: T
+}
+
+//lets use this with index access types
+
+type PartOFWindow = {
+  [
+    Key in 
+    | "document"
+    | "navigator"
+    | "setTimeout"
+  ] : Window[Key]
+}
+
+type PickWindowProperties<Keys extends keyof Window> = {
+  [Key in Keys]: Window[Key]
+}
+
+// prettier-ignore
+type PartOFWindow1 = PickWindowProperties<
+  "document" | "navigator" | "setTimeout" | "setInterval"
+  >
+
+
+//let's generalize it one step further by allowing this type to work on anything, now just windwo. cuz this is no longer a type
+// that exclusively works with Window , we will rename this type to pickupProperties
+
+type PickupProperties< Keys extends keyof ValueType, ValueType> = {
+  [Key in Keys] : ValueType[Key]
+}
+
+type Partly = PickupProperties<"document" | "navigator" | "setTimeout" | "setInterval", Window> // now it is done, can be used anywhere
+
+
+// we have arrived another built in type Pick
+
+/**
+ * From T, pick a set of properties whose keys are in the union 
+ */
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+
+
+// Mapping modifiers
+
+// Folloing our analogy of mapped types feeling like "Looping over all keys", there are a couple of final things we can do to the properties as we create each type: set whether the value placed  there should be readonly and /or optional
+
+
+/**
+ * Make all properties in T optional 
+ */
+type Partial<T> = {
+  [P in keyof T]?: T[P]
+}
+/**
+ * Make all properties in T required
+ */
+type REquired<T> = {
+  [P in keyof T]-?: T[P]
+}
+/**
+ * Make all the properties in T readonly
+ */
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P]
+  // -readonly [P in keyof T]: T[P]
+}
+
+
+//Template literal types
+
+type ArtF = 'cabin' | "tree" | "sunset"
+type COlors = 
+  | "darkSienna"
+  | "sapGreen"
+  | "titaniumWhite"
+  | "prussianBlue"
+
+type paintNames = `paint_${COlors}_${ArtF}`
+
+// while simething "paint_darkSienna_cabin" could definetely be the name of a class method in js or ts, it is more convantional to use cameCase instead of snake_case
+//  ts provides a few special types you can use within these template literal types
+
+// UpperCase
+// LowerCase
+// Capitalize
+// Uncapitilize
+
+type ArtMEthodNames = `paint${Capitalize<COlors>}${Capitalize<ArtF>}`
+
+
+
+
+// now the use of as keyword in the index signatures
+interface DataState {
+  digits: number[]
+  names: string[]
+  flags: Record<"darkMode" | "mobile", boolean>
+}
+
+type DataSDK = {
+  // the mapped type 
+  [K in keyof DataState as `set${Capitalize<K>}`]:
+    (arg: DataState[K]) => void
+}
+
+function load(datasdk: DataSDK) {
+  datasdk.setNames(['alif'])
+  datasdk.setFlags({ darkMode: true, mobile: false })
+  datasdk.setDigits([12, 2, 2, 3])
+}
