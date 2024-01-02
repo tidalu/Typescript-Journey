@@ -617,3 +617,70 @@ function load(datasdk: DataSDK) {
   datasdk.setFlags({ darkMode: true, mobile: false })
   datasdk.setDigits([12, 2, 2, 3])
 }
+
+
+// filtering properties out
+
+//  here is the example of using Extract and a template literal typt tp filter for onlu those member of window.document that begin with "query"
+
+type DocKeys = Extract<keyof Document, `query${string}`>
+type FilteredDocs = {
+  [Key in DocKeys]: Document[Key]
+}
+
+
+
+// Get keys of type T whose values are assignable to type U
+type FilteredKeys<T, U> = {
+  [P in keyof T]: T[P] extends U ? P : never
+}[keyof T] &
+  keyof T
+
+type RelevantDocumentKeys = FilteredKeys<
+  Document,
+  (...args: any[]) => Element | Element[]
+>
+
+type ValueFilteredDoc = Pick<Document, RelevantDocumentKeys>
+//    ^?
+
+function loader(doc: ValueFilteredDoc) {
+  doc.querySelector("input")
+  
+  //    ^?
+}
+
+//  typing a  data layer
+
+class Book {
+  constructor(public author: string, public title: string){}
+}
+
+class Movie {
+  constructor(public director: string ){}
+}
+
+class Song {
+
+  constructor(public artist: string ) { }
+}
+interface EntitlyMap {
+  book: Book
+  movie: Movie
+  song: Song
+}
+
+class Store {
+  constructor() {
+    
+  }
+
+  get<Key extends keyof EntitlyMap>(kind: Key, id: string) : EntitlyMap[Key] {
+    
+  }
+
+  getAll<Key extends keyof EntitlyMap>(kind: Key):EntitlyMap[Key][] { }
+  
+  create<Key extends keyof EntitlyMap>(kind: Key, toCreate: EntitlyMap[Key]): void { }
+  update<Key extends keyof EntitlyMap>(kind: Key, id: string, props: Partial<EntitlyMap[Key]>) { }
+}
