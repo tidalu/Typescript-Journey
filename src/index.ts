@@ -403,7 +403,7 @@ const d22 = new myDate()
 
 // funtion overloads :
 
-// @noImplicitAny: false
+// @noImplicitAny: true
 type FormSubmitHandler = (data: FormData) => void
 type MessageHandler = (evt: MessageEvent) => void
 
@@ -443,7 +443,7 @@ function myClickHandler(
   //   ^?
 }
 
-myClickHandler(new Event("click")) // seems no longer ok
+myClickHandler(document.querySelector('button'), new Event("click")) // seems no longer ok
 
 myClickHandler
 // ^?

@@ -281,6 +281,7 @@ type objectTypes = Extract<FavoriteColors, { [key: string]: number }> // another
 type ObjectColors = Extract<FavoriteColors, { red: number }>
 type tupleColors = Extract<FavoriteColors, [number, number, number]>
 
+
 // we are extracting in the buset of a type that is assignable to antoher specified type
 
 
